@@ -3,6 +3,8 @@ import 'package:barber_booking_app/ui/widgets/screens_bg.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
+import '../widgets/main_button.dart';
+
 class OnbordingScreen extends StatefulWidget {
   const OnbordingScreen({super.key});
 
@@ -24,24 +26,7 @@ class _OnbordingScreenState extends State<OnbordingScreen> {
                   child: Image(image: AssetImage("images/barber.png")),
                 ),
                 const SizedBox(height: 50,),
-                GestureDetector(
-                  onTap: _onTapOnButton,
-                  child: Container(
-                    padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-                    decoration: BoxDecoration(
-                      color: Color(0xFFdf711a),
-                      borderRadius: BorderRadius.circular(30),
-                    ),
-                    child: Text(
-                      "Get A Stylish Haircut",
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 20,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ),
-                ),
+                MainButton(title: "Let's get started",onClick: _onTapOnButton),
               ],
             ),
       ),
@@ -51,3 +36,5 @@ class _OnbordingScreenState extends State<OnbordingScreen> {
     Navigator.pushNamedAndRemoveUntil(context, HomeScreen.name, (predicate)=>false);
   }
 }
+
+

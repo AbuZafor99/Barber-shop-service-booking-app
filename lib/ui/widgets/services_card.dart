@@ -17,7 +17,7 @@ class ServicesCard extends StatelessWidget {
       fit: FlexFit.tight,
       child: GestureDetector(
         onTap:(){
-          Navigator.pushNamed(context, BookingScreen.name);
+          Navigator.push(context, MaterialPageRoute(builder: (context)=>BookingScreen(service: title)));
         },
         child: Container(
           height: 150,
