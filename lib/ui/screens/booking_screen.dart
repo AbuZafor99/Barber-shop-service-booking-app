@@ -32,7 +32,7 @@ class _BookingScreenState extends State<BookingScreen> {
                 color: Colors.white,
                 size: 30,
               ),
-              const SizedBox(height: 30),
+              const SizedBox(height: 20),
               Text(
                 "Let's the\njourney begin",
                 style: TextStyle(
@@ -101,7 +101,7 @@ class _BookingScreenState extends State<BookingScreen> {
                   ],
                 ),
               ),
-              const SizedBox(height: 30),
+              const SizedBox(height: 20),
               Container(
                 padding: EdgeInsets.symmetric(vertical: 15),
                 decoration: BoxDecoration(
@@ -147,7 +147,7 @@ class _BookingScreenState extends State<BookingScreen> {
                   ],
                 ),
               ),
-              const SizedBox(height: 30),
+              const SizedBox(height: 10),
               Center(
                 child: MainButton(
                   title: "Booked Now",

@@ -1,19 +1,18 @@
 import 'dart:math' as math;
-import 'package:barber_booking_app/ui/screens/signup_screen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 
-class LoginScreen extends StatefulWidget {
-  const LoginScreen({super.key});
+class SignUpScreen extends StatefulWidget {
+  const SignUpScreen({super.key});
 
-  static const String name = '/login-scren';
+  static const String name = '/signup-scren';
 
   @override
-  State<LoginScreen> createState() => _LoginScreenState();
+  State<SignUpScreen> createState() => _SignUpScreenState();
 }
 
-class _LoginScreenState extends State<LoginScreen> {
+class _SignUpScreenState extends State<SignUpScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -35,7 +34,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 ),
               ),
               child: Text(
-                "Hello\nSign in!",
+                "Hello\nSign Up!",
                 style: TextStyle(
                   color: Colors.white,
                   fontSize: 40,
@@ -62,13 +61,40 @@ class _LoginScreenState extends State<LoginScreen> {
                   children: [
                     const SizedBox(height: 90),
                     TextFormField(
+                      keyboardType: TextInputType.text,
+                      decoration: InputDecoration(
+                        prefixIcon: Icon(Icons.person),
+                        label: const Text('Name'),
+                        hintText: 'Enter your name',
+                        enabledBorder: OutlineInputBorder(
+                          borderSide: const BorderSide(color: Colors.black12),
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          borderSide: const BorderSide(
+                            color: Color(0xFF621d3c),
+                            width: 2,
+                          ),
+                          borderRadius: BorderRadius.circular(15),
+                        ),
+                        errorBorder: OutlineInputBorder(
+                          borderSide: const BorderSide(
+                            color: Colors.red,
+                            width: 2,
+                          ),
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 30),
+                    TextFormField(
                       keyboardType: TextInputType.emailAddress,
                       decoration: InputDecoration(
                         prefixIcon: Icon(Icons.email),
                         label: const Text('Email'),
                         hintText: 'Enter your email',
                         enabledBorder: OutlineInputBorder(
-                          borderSide: const BorderSide(color: Colors.grey),
+                          borderSide: const BorderSide(color: Colors.black12),
                           borderRadius: BorderRadius.circular(10),
                         ),
                         focusedBorder: OutlineInputBorder(
@@ -96,7 +122,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         label: const Text('Password'),
                         hintText: 'Enter your password',
                         enabledBorder: OutlineInputBorder(
-                          borderSide: const BorderSide(color: Colors.grey),
+                          borderSide: const BorderSide(color: Colors.black12),
                           borderRadius: BorderRadius.circular(10),
                         ),
                         focusedBorder: OutlineInputBorder(
@@ -134,7 +160,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         ),
                         child: Center(
                           child: Text(
-                            "Sign In",
+                            "Sign Up",
                             style: TextStyle(
                               color: Colors.white,
                               fontSize: 24,
@@ -147,37 +173,30 @@ class _LoginScreenState extends State<LoginScreen> {
                     SizedBox(height: 32),
                     Center(
                       child: Column(
-                    children: [
-                      TextButton(
-                        onPressed: (){},
-                        child: Text(
-                          "Forgot Password?",
-                          style: TextStyle(color: Colors.grey),
-                        ),
-                      ),
-                      RichText(
-                        text: TextSpan(
-                          text: "Don't have an account? ",
-                          style: TextStyle(
-                            fontWeight: FontWeight.w600,
-                            color: Colors.black,
-                            letterSpacing: 0.4,
-                          ),
-                          children: [
-                            TextSpan(
-                              text: 'Sign Up',
+                        children: [
+                          RichText(
+                            text: TextSpan(
+                              text: "Have an account? ",
                               style: TextStyle(
-                                color: Colors.green,
-                                fontWeight: FontWeight.w700,
+                                fontWeight: FontWeight.w600,
+                                color: Colors.black,
+                                letterSpacing: 0.4,
                               ),
-                              recognizer: TapGestureRecognizer()
-                                ..onTap = ()=>Navigator.pushNamed(context,SignUpScreen.name),
+                              children: [
+                                TextSpan(
+                                  text: 'Sign In',
+                                  style: TextStyle(
+                                    color: Colors.green,
+                                    fontWeight: FontWeight.w700,
+                                  ),
+                                  recognizer: TapGestureRecognizer()
+                                    ..onTap = ()=>Navigator.pop(context),
+                                ),
+                              ],
                             ),
-                          ],
-                        ),
+                          ),
+                        ],
                       ),
-                    ],
-                  ),
                     )
                   ],
                 ),

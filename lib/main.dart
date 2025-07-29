@@ -1,6 +1,8 @@
 import 'package:barber_booking_app/ui/screens/booking_screen.dart';
 import 'package:barber_booking_app/ui/screens/home_screen.dart';
+import 'package:barber_booking_app/ui/screens/login_screen.dart';
 import 'package:barber_booking_app/ui/screens/onbording_screen.dart';
+import 'package:barber_booking_app/ui/screens/signup_screen.dart';
 import 'package:barber_booking_app/ui/screens/splash_screen.dart';
 import 'package:flutter/material.dart';
 
@@ -20,7 +22,9 @@ class MyApp extends StatelessWidget {
         SplashScreen.name:(context)=>SplashScreen(),
         OnbordingScreen.name:(context)=>OnbordingScreen(),
         HomeScreen.name:(context)=>HomeScreen(),
-        BookingScreen.name:(context)=>BookingScreen(service: '',)
+        // BookingScreen.name:(context)=>BookingScreen(service: '',),
+        LoginScreen.name:(context) =>LoginScreen(),
+        SignUpScreen.name:(context) =>SignUpScreen(),
       },
     );
   }

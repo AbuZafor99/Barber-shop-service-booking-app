@@ -1,3 +1,4 @@
+import 'package:barber_booking_app/ui/screens/login_screen.dart';
 import 'package:barber_booking_app/ui/widgets/screens_bg.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -46,13 +47,16 @@ class _HomeScreenState extends State<HomeScreen> {
                       ),
                     ],
                   ),
-                  ClipRRect(
-                    borderRadius: BorderRadius.circular(30),
-                    child: Image.asset(
-                      "images/boy.jpg",
-                      height: 60,
-                      width: 60,
-                      fit: BoxFit.cover,
+                  GestureDetector(
+                    onTap: onClickOnProfileIcon,
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(30),
+                      child: Image.asset(
+                        "images/boy.jpg",
+                        height: 60,
+                        width: 60,
+                        fit: BoxFit.cover,
+                      ),
                     ),
                   ),
                 ],
@@ -97,6 +101,9 @@ class _HomeScreenState extends State<HomeScreen> {
         ),
       ),
     );
+  }
+  void onClickOnProfileIcon(){
+    Navigator.pushNamed(context, LoginScreen.name);
   }
 }
 

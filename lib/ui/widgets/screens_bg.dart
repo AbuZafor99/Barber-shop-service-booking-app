@@ -18,11 +18,11 @@ class ScreensBG extends StatelessWidget {
           decoration: BoxDecoration(
             gradient: LinearGradient(
               colors: [
-                Color(0xFF2b1615),
-                Color(0xFF2b1615),
-                Color(0xFF2b1615)
+                Color(0xFFb91635),
+                Color(0xFF621d3c),
+                Color(0xFF311937)
               ],
-              transform: GradientRotation(math.pi / 3),
+              transform: GradientRotation(math.pi / 20),
             ),
           ),
         ),
