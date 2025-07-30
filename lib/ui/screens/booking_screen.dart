@@ -1,7 +1,10 @@
+import 'package:barber_booking_app/ui/services/database.dart';
 import 'package:barber_booking_app/ui/widgets/main_button.dart';
 import 'package:barber_booking_app/ui/widgets/screens_bg.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+
+import '../services/shared_pref.dart';
 
 class BookingScreen extends StatefulWidget {
   BookingScreen({super.key, required this.service});
@@ -14,6 +17,35 @@ class BookingScreen extends StatefulWidget {
 }
 
 class _BookingScreenState extends State<BookingScreen> {
+
+  String? name, image,email;
+  bool _isLoading = true;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadUserData();
+  }
+
+  Future<void> _loadUserData() async {
+    try {
+      name = await SharedPreferenceHelper().getUserName();
+      image = await SharedPreferenceHelper().getUserImage();
+      email=await SharedPreferenceHelper().getUserEmail();
+    } catch (e) {
+      // Set default values if there's an error
+      name = "Guest";
+      image =
+      "https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg";
+    }
+
+    if (mounted) {
+      setState(() {
+        _isLoading = false;
+      });
+    }
+  }
+
   DateTime _selectedDate = DateTime.now();
   TimeOfDay _selectedTime = TimeOfDay.now();
 
@@ -151,7 +183,7 @@ class _BookingScreenState extends State<BookingScreen> {
               Center(
                 child: MainButton(
                   title: "Booked Now",
-                  onClick: () {},
+                  onClick: onTapBookingButton,
                   color: Color(0xFFf38f33),
                 ),
               ),
@@ -194,5 +226,20 @@ class _BookingScreenState extends State<BookingScreen> {
         });
       }
     }
+  }
+  void onTapBookingButton()async{
+    Map<String,dynamic>userBookingMap={
+      "Service":widget.service,
+      "Date":"${_selectedDate.day}/${_selectedDate.month}/${_selectedDate.year}".toString(),
+      "Time":_selectedTime.format(context).toString(),
+      "Name":name,
+      "Image":image,
+      "Email":email
+    };
+    await DatabaseMethods().addUserBooking(userBookingMap).then((onValue){
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Service booking successful.')),
+      );
+    });
   }
 }

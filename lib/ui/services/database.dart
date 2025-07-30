@@ -24,4 +24,9 @@ class DatabaseMethods {
       return null;
     }
   }
+  Future addUserBooking(Map<String, dynamic> userInfoMap) async {
+    return await FirebaseFirestore.instance
+        .collection("Booking")
+        .add(userInfoMap);
+  }
 }
