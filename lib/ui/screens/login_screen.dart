@@ -1,5 +1,7 @@
 import 'dart:math' as math;
 import 'package:barber_booking_app/ui/screens/signup_screen.dart';
+import 'package:barber_booking_app/ui/services/shared_pref.dart';
+import 'package:barber_booking_app/ui/services/database.dart';
 import 'package:email_validator/email_validator.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
@@ -18,23 +20,55 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
-  String? mail,pass;
+  String? mail, pass;
 
-  TextEditingController emailTEController=TextEditingController();
-  TextEditingController passwordTEController=TextEditingController();
-  final _formKey=GlobalKey<FormState>();
+  TextEditingController emailTEController = TextEditingController();
+  TextEditingController passwordTEController = TextEditingController();
+  final _formKey = GlobalKey<FormState>();
 
-  userLogin()async{
-    if(pass!=null && mail!=null){
-      try{
-        UserCredential userCredential=await FirebaseAuth.instance.signInWithEmailAndPassword(email: mail!, password: pass!);
-        Navigator.pushNamedAndRemoveUntil(context, HomeScreen.name, (predicate)=>false);
-      }on FirebaseAuthException catch(e){
-        if(e.code=="user-not-found"){
-          ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("No User found.",style: TextStyle(fontSize: 20),)));
+  userLogin() async {
+    if (pass != null && mail != null) {
+      try {
+        UserCredential userCredential = await FirebaseAuth.instance
+            .signInWithEmailAndPassword(email: mail!, password: pass!);
+
+        // Fetch user details from Firestore using email
+        print("Fetching user details for email: $mail");
+        var userInfo = await DatabaseMethods().getUserDetailsByEmail(mail!);
+        print("User info from Firestore: $userInfo");
+
+        if (userInfo != null) {
+          // Save user details to shared preferences
+          await SharedPreferenceHelper().saveUserName(userInfo['Name'] ?? '');
+          await SharedPreferenceHelper().saveUserEmail(userInfo['Email'] ?? '');
+          await SharedPreferenceHelper().saveUserId(userInfo['Id'] ?? '');
+          await SharedPreferenceHelper().saveUserImage(
+            userInfo['Image'] ??
+                'https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg',
+          );
         }
-        else if(e.code=="wrong-password"){
-          ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Wrong password. Please enter right password..",style: TextStyle(fontSize: 20),)));
+
+        Navigator.pushNamedAndRemoveUntil(
+          context,
+          HomeScreen.name,
+          (predicate) => false,
+        );
+      } on FirebaseAuthException catch (e) {
+        if (e.code == "user-not-found") {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text("No User found.", style: TextStyle(fontSize: 20)),
+            ),
+          );
+        } else if (e.code == "wrong-password") {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(
+                "Wrong password. Please enter right password..",
+                style: TextStyle(fontSize: 20),
+              ),
+            ),
+          );
         }
       }
     }
@@ -128,13 +162,13 @@ class _LoginScreenState extends State<LoginScreen> {
                     ),
                     const SizedBox(height: 30),
                     TextFormField(
-                      validator: (value){
-                        if(value==null || value.isEmpty){
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
                           return "Enter a password";
-                        }
-                        else if(value.length<=6){
+                        } else if (value.length <= 6) {
                           return "Password must be more than 6 digit";
-                        }return null;
+                        }
+                        return null;
                       },
                       controller: passwordTEController,
                       obscureText: true,
@@ -165,7 +199,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     ),
                     const SizedBox(height: 40),
                     GestureDetector(
-                      onTap: ()=>_onPressOnSignUpButton(),
+                      onTap: () => _onPressOnSignUpButton(),
                       child: Container(
                         height: 60,
                         width: MediaQuery.of(context).size.width,
@@ -195,38 +229,41 @@ class _LoginScreenState extends State<LoginScreen> {
                     SizedBox(height: 32),
                     Center(
                       child: Column(
-                    children: [
-                      TextButton(
-                        onPressed: (){},
-                        child: Text(
-                          "Forgot Password?",
-                          style: TextStyle(color: Colors.grey),
-                        ),
-                      ),
-                      RichText(
-                        text: TextSpan(
-                          text: "Don't have an account? ",
-                          style: TextStyle(
-                            fontWeight: FontWeight.w600,
-                            color: Colors.black,
-                            letterSpacing: 0.4,
-                          ),
-                          children: [
-                            TextSpan(
-                              text: 'Sign Up',
-                              style: TextStyle(
-                                color: Colors.green,
-                                fontWeight: FontWeight.w700,
-                              ),
-                              recognizer: TapGestureRecognizer()
-                                ..onTap = ()=>Navigator.pushNamed(context,SignUpScreen.name),
+                        children: [
+                          TextButton(
+                            onPressed: () {},
+                            child: Text(
+                              "Forgot Password?",
+                              style: TextStyle(color: Colors.grey),
                             ),
-                          ],
-                        ),
+                          ),
+                          RichText(
+                            text: TextSpan(
+                              text: "Don't have an account? ",
+                              style: TextStyle(
+                                fontWeight: FontWeight.w600,
+                                color: Colors.black,
+                                letterSpacing: 0.4,
+                              ),
+                              children: [
+                                TextSpan(
+                                  text: 'Sign Up',
+                                  style: TextStyle(
+                                    color: Colors.green,
+                                    fontWeight: FontWeight.w700,
+                                  ),
+                                  recognizer: TapGestureRecognizer()
+                                    ..onTap = () => Navigator.pushNamed(
+                                      context,
+                                      SignUpScreen.name,
+                                    ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
                       ),
-                    ],
-                  ),
-                    )
+                    ),
                   ],
                 ),
               ),
@@ -236,11 +273,12 @@ class _LoginScreenState extends State<LoginScreen> {
       ),
     );
   }
-  void _onPressOnSignUpButton(){
-    if(_formKey.currentState!.validate()){
+
+  void _onPressOnSignUpButton() {
+    if (_formKey.currentState!.validate()) {
       setState(() {
-        mail=emailTEController.text.trim();
-        pass=passwordTEController.text;
+        mail = emailTEController.text.trim();
+        pass = passwordTEController.text;
       });
     }
     userLogin();

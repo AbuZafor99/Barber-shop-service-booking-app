@@ -1,5 +1,7 @@
 import 'package:barber_booking_app/ui/screens/login_screen.dart';
+import 'package:barber_booking_app/ui/services/shared_pref.dart';
 import 'package:barber_booking_app/ui/widgets/screens_bg.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -14,12 +16,43 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  String? name, image;
+  bool _isLoading = true;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadUserData();
+  }
+
+  Future<void> _loadUserData() async {
+    try {
+      name = await SharedPreferenceHelper().getUserName();
+      image = await SharedPreferenceHelper().getUserImage();
+    } catch (e) {
+      // Set default values if there's an error
+      name = "Guest";
+      image =
+          "https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg";
+    }
+
+    if (mounted) {
+      setState(() {
+        _isLoading = false;
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
+    if (_isLoading) {
+      return const Scaffold(body: Center(child: CircularProgressIndicator()));
+    }
+
     return Scaffold(
       body: ScreensBG(
         child: Container(
-          margin: EdgeInsets.only(top: 40, left: 20, right: 20),
+          margin: const EdgeInsets.only(top: 40, left: 20, right: 20),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -29,7 +62,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(
+                      const Text(
                         "Hello",
                         style: TextStyle(
                           color: Color.fromARGB(199, 255, 255, 255),
@@ -38,8 +71,8 @@ class _HomeScreenState extends State<HomeScreen> {
                         ),
                       ),
                       Text(
-                        "Abu Zafor",
-                        style: TextStyle(
+                        name ?? "Guest",
+                        style: const TextStyle(
                           color: Colors.white,
                           fontSize: 24,
                           fontWeight: FontWeight.bold,
@@ -51,8 +84,9 @@ class _HomeScreenState extends State<HomeScreen> {
                     onTap: onClickOnProfileIcon,
                     child: ClipRRect(
                       borderRadius: BorderRadius.circular(30),
-                      child: Image.asset(
-                        "images/boy.jpg",
+                      child: Image.network(
+                        image ??
+                            "https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg",
                         height: 60,
                         width: 60,
                         fit: BoxFit.cover,
@@ -61,10 +95,10 @@ class _HomeScreenState extends State<HomeScreen> {
                   ),
                 ],
               ),
-              SizedBox(height: 15,),
-              Divider(color: Colors.white38,),
-              SizedBox(height: 15,),
-              Text(
+              const SizedBox(height: 15),
+              const Divider(color: Colors.white38),
+              const SizedBox(height: 15),
+              const Text(
                 "Services",
                 style: TextStyle(
                   color: Colors.white,
@@ -72,39 +106,105 @@ class _HomeScreenState extends State<HomeScreen> {
                   fontWeight: FontWeight.bold,
                 ),
               ),
-              const SizedBox(height: 25,),
-              Row(
+              const SizedBox(height: 25),
+              const Row(
                 children: [
-                  ServicesCard(imagePath: "images/shaving.png",title: "Classical Shaving",),
-                  const SizedBox(width: 20,),
-                  ServicesCard(imagePath: "images/hair.png",title: "Hair Washing",),
+                  ServicesCard(
+                    imagePath: "images/shaving.png",
+                    title: "Classical Shaving",
+                  ),
+                  SizedBox(width: 20),
+                  ServicesCard(
+                    imagePath: "images/hair.png",
+                    title: "Hair Washing",
+                  ),
                 ],
               ),
-              const SizedBox(height: 25,),
-              Row(
+              const SizedBox(height: 25),
+              const Row(
                 children: [
-                  ServicesCard(imagePath: "images/cutting.png",title: "Hair Cutting",),
-                  const SizedBox(width: 20,),
-                  ServicesCard(imagePath: "images/beard.png",title: "Beard Trimming",),
+                  ServicesCard(
+                    imagePath: "images/cutting.png",
+                    title: "Hair Cutting",
+                  ),
+                  SizedBox(width: 20),
+                  ServicesCard(
+                    imagePath: "images/beard.png",
+                    title: "Beard Trimming",
+                  ),
                 ],
               ),
-              const SizedBox(height: 25,),
-              Row(
+              const SizedBox(height: 25),
+              const Row(
                 children: [
-                  ServicesCard(imagePath: "images/facials.png",title: "Facials",),
-                  const SizedBox(width: 20,),
-                  ServicesCard(imagePath: "images/kids.png",title: "Kids Hair Cutting",),
+                  ServicesCard(
+                    imagePath: "images/facials.png",
+                    title: "Facials",
+                  ),
+                  SizedBox(width: 20),
+                  ServicesCard(
+                    imagePath: "images/kids.png",
+                    title: "Kids Hair Cutting",
+                  ),
                 ],
-              )
+              ),
             ],
           ),
         ),
       ),
     );
   }
-  void onClickOnProfileIcon(){
-    Navigator.pushNamed(context, LoginScreen.name);
+
+  void onClickOnProfileIcon() {
+    _showLogoutDialog();
+  }
+
+  void _showLogoutDialog() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Logout'),
+          content: Text('Are you sure you want to logout?'),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: Text('Cancel'),
+            ),
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+                _logout();
+              },
+              child: Text('Logout'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  void _logout() async {
+    try {
+      // Sign out from Firebase Auth
+      await FirebaseAuth.instance.signOut();
+
+      // Clear all data from Shared Preferences
+      await SharedPreferenceHelper().clearAllData();
+
+      // Navigate to login screen and clear all previous routes
+      Navigator.pushNamedAndRemoveUntil(
+        context,
+        LoginScreen.name,
+        (predicate) => false,
+      );
+    } catch (e) {
+      print('Error during logout: $e');
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Error during logout. Please try again.')),
+      );
+    }
   }
 }
-
-

@@ -1,12 +1,14 @@
 import 'dart:math' as math;
-import 'package:barber_booking_app/ui/screens/home_screen.dart';
+import 'package:barber_booking_app/ui/screens/login_screen.dart';
+import 'package:barber_booking_app/ui/services/shared_pref.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:email_validator/email_validator.dart';
+import 'package:random_string/random_string.dart';
 
-
+import '../services/database.dart';
 
 class SignUpScreen extends StatefulWidget {
   const SignUpScreen({super.key});
@@ -18,26 +20,67 @@ class SignUpScreen extends StatefulWidget {
 }
 
 class _SignUpScreenState extends State<SignUpScreen> {
-  String? name,mail,pass;
+  String? name, mail, pass;
 
-  TextEditingController nameTEController=new TextEditingController();
-  TextEditingController emailTEController=new TextEditingController();
-  TextEditingController passwordTEController=new TextEditingController();
+  TextEditingController nameTEController = new TextEditingController();
+  TextEditingController emailTEController = new TextEditingController();
+  TextEditingController passwordTEController = new TextEditingController();
 
-  final _formKey= GlobalKey<FormState>();
+  final _formKey = GlobalKey<FormState>();
 
-  registration()async{
-    if(pass!=null && name!=null && mail!=null){
-      try{
-        UserCredential userCredential=await FirebaseAuth.instance.createUserWithEmailAndPassword(email: mail!, password: pass!);
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Registration successfull",style: TextStyle(fontSize: 20),)));
-        Navigator.pushNamedAndRemoveUntil(context, HomeScreen.name, (predicate)=>false);
-      }on FirebaseAuthException catch(e){
-        if(e.code=="weak-password"){
-          ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Password is too weak. Please set a strong password.",style: TextStyle(fontSize: 20),)));
-        }
-        else if(e.code=="email-already-in-use"){
-          ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Account already exist.",style: TextStyle(fontSize: 20),)));
+  registration() async {
+    if (pass != null && name != null && mail != null) {
+      try {
+        UserCredential userCredential = await FirebaseAuth.instance
+            .createUserWithEmailAndPassword(email: mail!, password: pass!);
+        String id = randomAlphaNumeric(15);
+        await SharedPreferenceHelper().saveUserName(
+          nameTEController.text,
+        );
+        await SharedPreferenceHelper().saveUserEmail(
+          emailTEController.text,
+        );
+        await SharedPreferenceHelper().saveUserId(id);
+        await SharedPreferenceHelper().saveUserImage("https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg");
+        Map<String, dynamic> userInfoMap = {
+          "Name": nameTEController.text.trim(),
+          "Email": emailTEController.text.trim(),
+          "Id": id,
+          "Image": "https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg",
+        };
+        await DatabaseMethods().addUserDetails(userInfoMap, id);
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(
+              "Registration successfull",
+              style: TextStyle(fontSize: 20),
+            ),
+          ),
+        );
+        Navigator.pushNamedAndRemoveUntil(
+          context,
+          LoginScreen.name,
+          (predicate) => false,
+        );
+      } on FirebaseAuthException catch (e) {
+        if (e.code == "weak-password") {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(
+                "Password is too weak. Please set a strong password.",
+                style: TextStyle(fontSize: 20),
+              ),
+            ),
+          );
+        } else if (e.code == "email-already-in-use") {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(
+                "Account already exist.",
+                style: TextStyle(fontSize: 20),
+              ),
+            ),
+          );
         }
       }
     }
@@ -93,10 +136,11 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   children: [
                     const SizedBox(height: 90),
                     TextFormField(
-                      validator: (value){
-                        if(value == null || value.isEmpty){
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
                           return "Please Enter Your name";
-                        }return null;
+                        }
+                        return null;
                       },
                       controller: nameTEController,
                       textInputAction: TextInputAction.next,
@@ -165,13 +209,13 @@ class _SignUpScreenState extends State<SignUpScreen> {
                     ),
                     const SizedBox(height: 30),
                     TextFormField(
-                      validator: (value){
-                        if(value==null || value.isEmpty){
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
                           return "Enter a password";
-                        }
-                        else if(value.length<=6){
+                        } else if (value.length <= 6) {
                           return "Password must be more than 6 digit";
-                        }return null;
+                        }
+                        return null;
                       },
                       controller: passwordTEController,
                       obscureText: true,
@@ -202,7 +246,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                     ),
                     const SizedBox(height: 40),
                     GestureDetector(
-                      onTap: ()=>_onPressOnSignUpButton(),
+                      onTap: () => _onPressOnSignUpButton(),
                       child: Container(
                         height: 60,
                         width: MediaQuery.of(context).size.width,
@@ -249,14 +293,14 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                     fontWeight: FontWeight.w700,
                                   ),
                                   recognizer: TapGestureRecognizer()
-                                    ..onTap = ()=>Navigator.pop(context),
+                                    ..onTap = () => Navigator.pop(context),
                                 ),
                               ],
                             ),
                           ),
                         ],
                       ),
-                    )
+                    ),
                   ],
                 ),
               ),
@@ -266,12 +310,13 @@ class _SignUpScreenState extends State<SignUpScreen> {
       ),
     );
   }
-  void _onPressOnSignUpButton(){
-    if(_formKey.currentState!.validate()){
+
+  void _onPressOnSignUpButton() {
+    if (_formKey.currentState!.validate()) {
       setState(() {
-        name=nameTEController.text.trim();
-        mail=emailTEController.text.trim();
-        pass=passwordTEController.text;
+        name = nameTEController.text.trim();
+        mail = emailTEController.text.trim();
+        pass = passwordTEController.text;
       });
     }
     registration();

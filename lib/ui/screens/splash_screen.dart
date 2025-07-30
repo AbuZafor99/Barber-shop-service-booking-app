@@ -1,6 +1,9 @@
 import 'dart:math' as math;
 
 import 'package:barber_booking_app/ui/screens/signup_screen.dart';
+import 'package:barber_booking_app/ui/screens/home_screen.dart';
+import 'package:barber_booking_app/ui/services/shared_pref.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -46,9 +49,36 @@ class _SplashScreenState extends State<SplashScreen> {
     );
   }
 
-  void _screenReplacement() {
-    Navigator.pushNamedAndRemoveUntil(context, OnbordingScreen.name, (predicate)=>false);
+  void _screenReplacement() async {
+    // Check if user is already logged in
+    User? currentUser = FirebaseAuth.instance.currentUser;
+
+    if (currentUser != null) {
+      // User is logged in, check if we have user data in shared preferences
+      String? userName = await SharedPreferenceHelper().getUserName();
+
+      if (userName != null && userName.isNotEmpty) {
+        // User data exists, go directly to home screen
+        Navigator.pushNamedAndRemoveUntil(
+          context,
+          HomeScreen.name,
+          (predicate) => false,
+        );
+      } else {
+        // User is logged in but no data in shared preferences, go to onboarding
+        Navigator.pushNamedAndRemoveUntil(
+          context,
+          OnbordingScreen.name,
+          (predicate) => false,
+        );
+      }
+    } else {
+      // No user logged in, go to onboarding
+      Navigator.pushNamedAndRemoveUntil(
+        context,
+        OnbordingScreen.name,
+        (predicate) => false,
+      );
+    }
   }
 }
-
-
