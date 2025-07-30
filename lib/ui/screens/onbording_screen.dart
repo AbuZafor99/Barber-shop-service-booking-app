@@ -1,4 +1,5 @@
 import 'package:barber_booking_app/ui/screens/home_screen.dart';
+import 'package:barber_booking_app/ui/screens/login_screen.dart';
 import 'package:barber_booking_app/ui/widgets/screens_bg.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -33,7 +34,7 @@ class _OnbordingScreenState extends State<OnbordingScreen> {
     );
   }
   void _onTapOnButton(){
-    Navigator.pushNamedAndRemoveUntil(context, HomeScreen.name, (predicate)=>false);
+    Navigator.pushNamedAndRemoveUntil(context, LoginScreen.name, (predicate)=>false);
   }
 }
 

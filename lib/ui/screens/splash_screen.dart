@@ -47,7 +47,7 @@ class _SplashScreenState extends State<SplashScreen> {
   }
 
   void _screenReplacement() {
-    Navigator.pushNamedAndRemoveUntil(context, SignUpScreen.name, (predicate)=>false);
+    Navigator.pushNamedAndRemoveUntil(context, OnbordingScreen.name, (predicate)=>false);
   }
 }
 

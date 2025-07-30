@@ -1,8 +1,12 @@
 import 'dart:math' as math;
 import 'package:barber_booking_app/ui/screens/signup_screen.dart';
+import 'package:email_validator/email_validator.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+
+import 'home_screen.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -14,6 +18,28 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
+  String? mail,pass;
+
+  TextEditingController emailTEController=TextEditingController();
+  TextEditingController passwordTEController=TextEditingController();
+  final _formKey=GlobalKey<FormState>();
+
+  userLogin()async{
+    if(pass!=null && mail!=null){
+      try{
+        UserCredential userCredential=await FirebaseAuth.instance.signInWithEmailAndPassword(email: mail!, password: pass!);
+        Navigator.pushNamedAndRemoveUntil(context, HomeScreen.name, (predicate)=>false);
+      }on FirebaseAuthException catch(e){
+        if(e.code=="user-not-found"){
+          ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("No User found.",style: TextStyle(fontSize: 20),)));
+        }
+        else if(e.code=="wrong-password"){
+          ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Wrong password. Please enter right password..",style: TextStyle(fontSize: 20),)));
+        }
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -58,10 +84,23 @@ class _LoginScreenState extends State<LoginScreen> {
                 ),
               ),
               child: Form(
+                key: _formKey,
+                autovalidateMode: AutovalidateMode.onUserInteraction,
                 child: Column(
                   children: [
                     const SizedBox(height: 90),
                     TextFormField(
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Please enter your email';
+                        }
+                        if (!EmailValidator.validate(value)) {
+                          return 'Please enter a valid email';
+                        }
+                        return null;
+                      },
+                      controller: emailTEController,
+                      textInputAction: TextInputAction.next,
                       keyboardType: TextInputType.emailAddress,
                       decoration: InputDecoration(
                         prefixIcon: Icon(Icons.email),
@@ -89,6 +128,15 @@ class _LoginScreenState extends State<LoginScreen> {
                     ),
                     const SizedBox(height: 30),
                     TextFormField(
+                      validator: (value){
+                        if(value==null || value.isEmpty){
+                          return "Enter a password";
+                        }
+                        else if(value.length<=6){
+                          return "Password must be more than 6 digit";
+                        }return null;
+                      },
+                      controller: passwordTEController,
                       obscureText: true,
                       keyboardType: TextInputType.number,
                       decoration: InputDecoration(
@@ -117,7 +165,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     ),
                     const SizedBox(height: 40),
                     GestureDetector(
-                      onTap: (){},
+                      onTap: ()=>_onPressOnSignUpButton(),
                       child: Container(
                         height: 60,
                         width: MediaQuery.of(context).size.width,
@@ -187,5 +235,14 @@ class _LoginScreenState extends State<LoginScreen> {
         ),
       ),
     );
+  }
+  void _onPressOnSignUpButton(){
+    if(_formKey.currentState!.validate()){
+      setState(() {
+        mail=emailTEController.text.trim();
+        pass=passwordTEController.text;
+      });
+    }
+    userLogin();
   }
 }

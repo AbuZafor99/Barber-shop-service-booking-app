@@ -99,6 +99,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                         }return null;
                       },
                       controller: nameTEController,
+                      textInputAction: TextInputAction.next,
                       keyboardType: TextInputType.text,
                       decoration: InputDecoration(
                         prefixIcon: Icon(Icons.person),
@@ -136,6 +137,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                         return null;
                       },
                       controller: emailTEController,
+                      textInputAction: TextInputAction.next,
                       keyboardType: TextInputType.emailAddress,
                       decoration: InputDecoration(
                         prefixIcon: Icon(Icons.email),
