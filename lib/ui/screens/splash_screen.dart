@@ -1,5 +1,6 @@
 import 'dart:math' as math;
 
+import 'package:barber_booking_app/ui/screens/signup_screen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -46,7 +47,7 @@ class _SplashScreenState extends State<SplashScreen> {
   }
 
   void _screenReplacement() {
-    Navigator.pushNamedAndRemoveUntil(context, OnbordingScreen.name, (predicate)=>false);
+    Navigator.pushNamedAndRemoveUntil(context, SignUpScreen.name, (predicate)=>false);
   }
 }
 
