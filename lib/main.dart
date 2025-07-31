@@ -1,9 +1,10 @@
-import 'package:barber_booking_app/ui/screens/booking_screen.dart';
-import 'package:barber_booking_app/ui/screens/home_screen.dart';
-import 'package:barber_booking_app/ui/screens/login_screen.dart';
-import 'package:barber_booking_app/ui/screens/onbording_screen.dart';
-import 'package:barber_booking_app/ui/screens/signup_screen.dart';
-import 'package:barber_booking_app/ui/screens/splash_screen.dart';
+import 'package:barber_booking_app/admin/screens/admin_dashboard_screen.dart';
+import 'package:barber_booking_app/admin/screens/admin_login_screen.dart';
+import 'package:barber_booking_app/user/screens/home_screen.dart';
+import 'package:barber_booking_app/user/screens/login_screen.dart';
+import 'package:barber_booking_app/user/screens/onbording_screen.dart';
+import 'package:barber_booking_app/user/screens/signup_screen.dart';
+import 'package:barber_booking_app/user/screens/splash_screen.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 
@@ -28,6 +29,8 @@ class MyApp extends StatelessWidget {
         // BookingScreen.name:(context)=>BookingScreen(service: '',),
         LoginScreen.name:(context) =>LoginScreen(),
         SignUpScreen.name:(context) =>SignUpScreen(),
+        AdminLoginScreen.name:(context)=>AdminLoginScreen(),
+        AdminDashboardScreen.name:(context)=>AdminDashboardScreen()
       },
     );
   }

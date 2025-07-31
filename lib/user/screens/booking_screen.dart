@@ -1,6 +1,6 @@
-import 'package:barber_booking_app/ui/services/database.dart';
-import 'package:barber_booking_app/ui/widgets/main_button.dart';
-import 'package:barber_booking_app/ui/widgets/screens_bg.dart';
+import 'package:barber_booking_app/user/services/database.dart';
+import 'package:barber_booking_app/user/widgets/main_button.dart';
+import 'package:barber_booking_app/user/widgets/screens_bg.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 

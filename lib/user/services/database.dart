@@ -29,4 +29,8 @@ class DatabaseMethods {
         .collection("Booking")
         .add(userInfoMap);
   }
+
+  Future<Stream<QuerySnapshot>> getBookings() async {
+    return FirebaseFirestore.instance.collection("Booking").snapshots();
+  }
 }

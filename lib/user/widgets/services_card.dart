@@ -1,4 +1,4 @@
-import 'package:barber_booking_app/ui/screens/booking_screen.dart';
+import '../screens/booking_screen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 

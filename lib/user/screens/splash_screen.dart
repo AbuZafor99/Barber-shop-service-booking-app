@@ -1,8 +1,9 @@
 import 'dart:math' as math;
 
-import 'package:barber_booking_app/ui/screens/signup_screen.dart';
-import 'package:barber_booking_app/ui/screens/home_screen.dart';
-import 'package:barber_booking_app/ui/services/shared_pref.dart';
+import 'package:barber_booking_app/user/screens/signup_screen.dart';
+import 'package:barber_booking_app/user/screens/home_screen.dart';
+import 'package:barber_booking_app/user/screens/onbording_screen.dart';
+import 'package:barber_booking_app/user/services/shared_pref.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
