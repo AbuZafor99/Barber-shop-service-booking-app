@@ -59,10 +59,15 @@ class _BookingScreenState extends State<BookingScreen> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               const SizedBox(height: 40),
-              Icon(
-                Icons.arrow_back_ios_new_rounded,
-                color: Colors.white,
-                size: 30,
+              GestureDetector(
+                onTap: (){
+                  Navigator.pop(context);
+                },
+                child: Icon(
+                  Icons.arrow_back_ios_new_rounded,
+                  color: Colors.white,
+                  size: 30,
+                ),
               ),
               const SizedBox(height: 20),
               Text(

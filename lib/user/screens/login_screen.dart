@@ -122,7 +122,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 autovalidateMode: AutovalidateMode.onUserInteraction,
                 child: Column(
                   children: [
-                    const SizedBox(height: 90),
+                    const SizedBox(height: 70),
                     TextFormField(
                       validator: (value) {
                         if (value == null || value.isEmpty) {
@@ -200,27 +200,32 @@ class _LoginScreenState extends State<LoginScreen> {
                     const SizedBox(height: 40),
                     GestureDetector(
                       onTap: () => _onPressOnSignUpButton(),
-                      child: Container(
-                        height: 60,
-                        width: MediaQuery.of(context).size.width,
-                        decoration: BoxDecoration(
-                          gradient: LinearGradient(
-                            colors: [
-                              Color(0xFFb91635),
-                              Color(0xFF621d3c),
-                              Color(0xFF311937),
-                            ],
-                            transform: GradientRotation(math.pi / 8),
+                      child: Material(
+                        elevation: 5,
+                        borderRadius: BorderRadius.circular(15),
+                        color: Colors.grey.shade50,
+                        child: Container(
+                          height: 60,
+                          width: MediaQuery.of(context).size.width,
+                          decoration: BoxDecoration(
+                            gradient: LinearGradient(
+                              colors: [
+                                Color(0xFFb91635),
+                                Color(0xFF621d3c),
+                                Color(0xFF311937),
+                              ],
+                              transform: GradientRotation(math.pi / 8),
+                            ),
+                            borderRadius: BorderRadius.circular(15),
                           ),
-                          borderRadius: BorderRadius.circular(15),
-                        ),
-                        child: Center(
-                          child: Text(
-                            "Sign In",
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 24,
-                              fontWeight: FontWeight.bold,
+                          child: Center(
+                            child: Text(
+                              "Sign In",
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 24,
+                                fontWeight: FontWeight.bold,
+                              ),
                             ),
                           ),
                         ),
@@ -262,6 +267,40 @@ class _LoginScreenState extends State<LoginScreen> {
                             ),
                           ),
                         ],
+                      ),
+                    ),
+                    const SizedBox(height: 40),
+                    Material(
+                      elevation: 2.0,
+                      borderRadius: BorderRadius.only(
+                        topLeft: Radius.circular(20),
+                        bottomRight: Radius.circular(20),
+                      ),
+                      color: Colors.grey.shade50,
+                      child: GestureDetector(
+                        onTap: (){},
+                        child: SizedBox(
+                          height: 70,
+                          width: MediaQuery.of(context).size.width / 2,
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Text(
+                                "Sign In as Admin",
+                                style: TextStyle(
+                                  color: Color(0xFF621d3c),
+                                  fontSize: 20,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                              const SizedBox(width: 10),
+                              Icon(
+                                Icons.arrow_forward_ios,
+                                color: Colors.green,
+                              )
+                            ],
+                          ),
+                        ),
                       ),
                     ),
                   ],
