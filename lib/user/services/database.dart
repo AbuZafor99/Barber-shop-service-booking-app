@@ -30,7 +30,21 @@ class DatabaseMethods {
         .add(userInfoMap);
   }
 
-  Future<Stream<QuerySnapshot>> getBookings() async {
+  Stream<QuerySnapshot> getBookings() {
     return FirebaseFirestore.instance.collection("Booking").snapshots();
+  }
+
+  Future<void> acceptBooking(String bookingId) async {
+    return await FirebaseFirestore.instance
+        .collection("Booking")
+        .doc(bookingId)
+        .update({"Status": "Accepted"});
+  }
+
+  Future<void> deleteBooking(String bookingId) async {
+    return await FirebaseFirestore.instance
+        .collection("Booking")
+        .doc(bookingId)
+        .delete();
   }
 }
