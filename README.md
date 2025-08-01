@@ -8,8 +8,6 @@ This project represents my first hands-on experience with Firebase after learnin
 
 - **Firebase Authentication** - My first time implementing user login/signup
 - **Cloud Firestore** - Learning real-time database operations
-- **Firebase Realtime Database** - Understanding data synchronization
-- **Local Notifications** - Exploring push notification systems
 
 This project has been an incredible learning experience, helping me understand the power of Firebase as a backend-as-a-service solution. Every feature implemented has been a step forward in my Firebase learning journey!
 
@@ -42,20 +40,10 @@ This project has been an incredible learning experience, helping me understand t
 - **Backend**: Firebase
   - Firebase Authentication
   - Cloud Firestore
-  - Firebase Realtime Database
+  - 
 - **Local Storage**: Shared Preferences
 - **Notifications**: Flutter Local Notifications
 - **UI**: Material Design with custom styling
-
-## 📱 Screenshots
-
-The app includes various service images and a modern UI with:
-- Gradient backgrounds
-- Custom service cards
-- Professional barber imagery
-- Discount promotions
-
-## 🚀 Getting Started
 
 ### Prerequisites
 
@@ -117,83 +105,6 @@ lib/
         └── services_card.dart
 ```
 
-## 🔧 Configuration
-
-### Firebase Configuration
-
-1. **Authentication**: Enable Email/Password authentication
-2. **Firestore**: Set up collections for users and bookings
-3. **Security Rules**: Configure appropriate security rules for your collections
-
-### Environment Setup
-
-The app uses the following environment variables and configurations:
-- Firebase project configuration
-- Notification settings
-- Shared preferences for user data
-
-## 📊 Database Schema
-
-### Users Collection
-```json
-{
-  "Email": "user@example.com",
-  "Name": "User Name",
-  "Image": "profile_image_url"
-}
-```
-
-### Bookings Collection
-```json
-{
-  "Service": "Hair Cut",
-  "Date": "15/1/2024",
-  "Time": "2:30 PM",
-  "UserName": "User Name",
-  "UserEmail": "user@example.com",
-  "Image": "user_image_url",
-  "BookingTime": 1705312200000
-}
-```
-
-## 🎨 UI/UX Features
-
-- **Modern Design**: Clean and professional interface
-- **Responsive Layout**: Works on various screen sizes
-- **Custom Gradients**: Beautiful color schemes
-- **Service Cards**: Interactive service selection
-- **Loading States**: Smooth user experience with loading indicators
-
-## 🔐 Security Features
-
-- Firebase Authentication for secure user management
-- Firestore security rules for data protection
-- Input validation and sanitization
-- Secure data storage with Shared Preferences
-
-## 📱 Platform Support
-
-- ✅ Android
-- ✅ iOS
-- ✅ Web (Flutter Web)
-- ✅ Desktop (Windows, macOS, Linux)
-
-## 🚀 Deployment
-
-### Android
-```bash
-flutter build apk --release
-```
-
-### iOS
-```bash
-flutter build ios --release
-```
-
-### Web
-```bash
-flutter build web
-```
 
 ## 🤝 Contributing
 
@@ -203,24 +114,12 @@ flutter build web
 4. Push to the branch (`git push origin feature/AmazingFeature`)
 5. Open a Pull Request
 
-## 📄 License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
 ## 👥 Authors
 
 - **Abu Zafor** - *Initial work* - [GitHub](https://github.com/AbuZafor99)
 
-## 🙏 Acknowledgments
 
-- Flutter team for the amazing framework
-- Firebase for backend services and the incredible learning experience
-- The Flutter community for packages and support
-- My learning journey with Firebase - this project represents my growth as a developer
-
-## 📞 Support
-
-For support, create an issue in the [GitHub repository](https://github.com/AbuZafor99/Barber-shop-service-booking-app) or reach out through GitHub.
 
 ## 🔗 Repository
 
