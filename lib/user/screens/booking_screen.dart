@@ -17,8 +17,7 @@ class BookingScreen extends StatefulWidget {
 }
 
 class _BookingScreenState extends State<BookingScreen> {
-
-  String? name, image,email;
+  String? name, image, email;
   bool _isLoading = true;
 
   @override
@@ -31,12 +30,12 @@ class _BookingScreenState extends State<BookingScreen> {
     try {
       name = await SharedPreferenceHelper().getUserName();
       image = await SharedPreferenceHelper().getUserImage();
-      email=await SharedPreferenceHelper().getUserEmail();
+      email = await SharedPreferenceHelper().getUserEmail();
     } catch (e) {
       // Set default values if there's an error
       name = "Guest";
       image =
-      "https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg";
+          "https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg";
     }
 
     if (mounted) {
@@ -60,7 +59,7 @@ class _BookingScreenState extends State<BookingScreen> {
             children: [
               const SizedBox(height: 40),
               GestureDetector(
-                onTap: (){
+                onTap: () {
                   Navigator.pop(context);
                 },
                 child: Icon(
@@ -232,19 +231,61 @@ class _BookingScreenState extends State<BookingScreen> {
       }
     }
   }
-  void onTapBookingButton()async{
-    Map<String,dynamic>userBookingMap={
-      "Service":widget.service,
-      "Date":"${_selectedDate.day}/${_selectedDate.month}/${_selectedDate.year}".toString(),
-      "Time":_selectedTime.format(context).toString(),
-      "Name":name,
-      "Image":image,
-      "Email":email
-    };
-    await DatabaseMethods().addUserBooking(userBookingMap).then((onValue){
+
+  void onTapBookingButton() async {
+    // Show loading indicator
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return const Center(
+          child: CircularProgressIndicator(color: Colors.white),
+        );
+      },
+    );
+
+    try {
+      Map<String, dynamic> userBookingMap = {
+        "Service": widget.service,
+        "Date":
+            "${_selectedDate.day}/${_selectedDate.month}/${_selectedDate.year}",
+        "Time": _selectedTime.format(context),
+        "UserName": name,
+        "UserEmail": email,
+        "Image": image,
+        "BookingTime": DateTime.now().millisecondsSinceEpoch,
+      };
+
+      await DatabaseMethods().addUserBooking(userBookingMap);
+
+      // Close loading dialog
+      Navigator.pop(context);
+
+      // Show success message
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Service booking successful.')),
+        const SnackBar(
+          content: Text(
+            'Booking successful! You will receive a confirmation soon.',
+          ),
+          backgroundColor: Colors.green,
+          duration: Duration(seconds: 3),
+        ),
       );
-    });
+
+      // Navigate back to home screen
+      Navigator.pop(context);
+    } catch (e) {
+      // Close loading dialog
+      Navigator.pop(context);
+
+      // Show error message
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Booking failed. Please try again. Error: $e'),
+          backgroundColor: Colors.red,
+          duration: const Duration(seconds: 3),
+        ),
+      );
+    }
   }
 }

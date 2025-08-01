@@ -20,159 +20,208 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> {
   final NotificationService _notificationService = NotificationService();
   
 
-  getOnTheLoad()async{
-    BookingStream= await DatabaseMethods().getBookings();
-    setState(() {
-
-    });
-  }
-
   @override
   void initState() {
     super.initState();
-    getOnTheLoad();
+    BookingStream = DatabaseMethods().getBookings();
     _notificationService.initialize();
     _notificationService.listenForBookings();
   }
 
   Widget allBookings() {
-    return StreamBuilder(stream: BookingStream, builder: (context, AsyncSnapshot snapshot){
-      return snapshot.hasData? ListView.builder(
-        padding: EdgeInsets.zero,
-          itemCount: snapshot.data.docs.length,
-          scrollDirection: Axis.vertical,
-          shrinkWrap: true,
-          itemBuilder: (context,index){
-        DocumentSnapshot ds=snapshot.data.docs[index];
-        return Material(
-          elevation: 4,
-          borderRadius: BorderRadius.circular(20),
-          child: Container(
-            width: MediaQuery.of(context).size.width,
-            decoration: BoxDecoration(
-              gradient: LinearGradient(
-                colors: [
-                  Color(0xFFb91635),
-                  Color(0xFF621d3c),
-                  Color(0xFF311937),
-                ],
-                transform: GradientRotation(math.pi / 20),
-              ),
-              borderRadius: BorderRadius.circular(20),
-            ),
-            child: Padding(
-              padding: const EdgeInsets.all(15.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Row(
-                    children: [
-                      ClipRRect(
-                        borderRadius: BorderRadius.circular(60),
-                        child: ds["Image"] != null && ds["Image"] is String
-                            ? Image.network(
-                                ds["Image"],
-                                height: 80,
-                                width: 80,
-                                fit: BoxFit.cover,
-                                errorBuilder: (context, error, stackTrace) {
-                                  return Image.asset(
-                                    'images/deafult-Profile.jpg',
-                                    height: 80,
-                                    width: 80,
-                                    fit: BoxFit.cover,
+    return StreamBuilder(
+        stream: BookingStream,
+        builder: (context, AsyncSnapshot snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return Center(child: CircularProgressIndicator());
+          }
+          if (snapshot.hasError) {
+            return Center(child: Text("Some error occurred"));
+          }
+          if (!snapshot.hasData || snapshot.data.docs.isEmpty) {
+            return Center(child: Text("No bookings found."));
+          }
+          return ListView.builder(
+              padding: EdgeInsets.zero,
+              itemCount: snapshot.data.docs.length,
+              scrollDirection: Axis.vertical,
+              shrinkWrap: true,
+              itemBuilder: (context, index) {
+                DocumentSnapshot ds = snapshot.data.docs[index];
+                return Material(
+                  elevation: 4,
+                  borderRadius: BorderRadius.circular(20),
+                  child: Container(
+                    width: MediaQuery.of(context).size.width,
+                    decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                        colors: [
+                          Color(0xFFb91635),
+                          Color(0xFF621d3c),
+                          Color(0xFF311937),
+                        ],
+                        transform: GradientRotation(math.pi / 20),
+                      ),
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                    child: Padding(
+                      padding: const EdgeInsets.all(15.0),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Row(
+                            children: [
+                              ClipRRect(
+                                borderRadius: BorderRadius.circular(60),
+                                child: ds["Image"] != null && ds["Image"] is String
+                                    ? Image.network(
+                                        ds["Image"],
+                                        height: 80,
+                                        width: 80,
+                                        fit: BoxFit.cover,
+                                        errorBuilder: (context, error, stackTrace) {
+                                          return Image.asset(
+                                            'images/deafult-Profile.jpg',
+                                            height: 80,
+                                            width: 80,
+                                            fit: BoxFit.cover,
+                                          );
+                                        },
+                                      )
+                                    : Image.asset(
+                                        'images/deafult-Profile.jpg',
+                                        height: 80,
+                                        width: 80,
+                                        fit: BoxFit.cover,
+                                      ),
+                              ),
+                              const SizedBox(
+                                width: 20,
+                              ),
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    "Service : " + (ds["Service"] ?? "N/A"),
+                                    style: TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 18,
+                                      fontWeight: FontWeight.w500,
+                                    ),
+                                  ),
+                                  Text(
+                                    "Name : " + (ds["Name"] ?? "N/A"),
+                                    style: TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 18,
+                                      fontWeight: FontWeight.w500,
+                                    ),
+                                  ),
+                                  Text(
+                                    "Date : " + (ds["Date"] ?? "N/A"),
+                                    style: TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 18,
+                                      fontWeight: FontWeight.w500,
+                                    ),
+                                  ),
+                                  Text(
+                                    "Time : " + (ds["Time"] ?? "N/A"),
+                                    style: TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 18,
+                                      fontWeight: FontWeight.w500,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ),
+                          const SizedBox(
+                            height: 5,
+                          ),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.end,
+                            children: [
+                              GestureDetector(
+                                onTap: () async {
+                                  await DatabaseMethods().acceptBooking(ds.id);
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    SnackBar(
+                                      backgroundColor: Colors.green,
+                                      content: Text(
+                                        "Booking Accepted",
+                                        style: TextStyle(fontSize: 20),
+                                      ),
+                                    ),
                                   );
                                 },
-                              )
-                            : Image.asset(
-                                'images/deafult-Profile.jpg',
-                                height: 80,
-                                width: 80,
-                                fit: BoxFit.cover,
+                                child: Material(
+                                  elevation: 5,
+                                  borderRadius: BorderRadius.circular(20),
+                                  child: Container(
+                                    height: 30,
+                                    width: 80,
+                                    decoration: BoxDecoration(
+                                        color: Colors.green,
+                                        borderRadius: BorderRadius.circular(20)),
+                                    child: Center(
+                                        child: Text(
+                                      "Accept",
+                                      style: TextStyle(
+                                          color: Colors.white,
+                                          fontSize: 20,
+                                          fontWeight: FontWeight.bold),
+                                    )),
+                                  ),
+                                ),
                               ),
-                      ),
-                      const SizedBox(width: 20,),
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            "Service : "+ds["Service"],
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 18,
-                              fontWeight: FontWeight.w500,
-                            ),
-                          ),
-                          Text(
-                            "Name : "+ds["Name"],
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 18,
-                              fontWeight: FontWeight.w500,
-                            ),
-                          ),
-                          Text(
-                            "Date : "+ds["Date"],
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 18,
-                              fontWeight: FontWeight.w500,
-                            ),
-                          ),
-                          Text(
-                            "Time : "+ds["Time"],
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 18,
-                              fontWeight: FontWeight.w500,
-                            ),
+                              const SizedBox(
+                                width: 10,
+                              ),
+                              GestureDetector(
+                                onTap: () async {
+                                  await DatabaseMethods().deleteBooking(ds.id);
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    SnackBar(
+                                      backgroundColor: Colors.red,
+                                      content: Text(
+                                        "Booking Rejected",
+                                        style: TextStyle(fontSize: 20),
+                                      ),
+                                    ),
+                                  );
+                                },
+                                child: Material(
+                                  elevation: 5,
+                                  borderRadius: BorderRadius.circular(20),
+                                  child: Container(
+                                    height: 30,
+                                    width: 80,
+                                    decoration: BoxDecoration(
+                                        color: Colors.red,
+                                        borderRadius: BorderRadius.circular(20)),
+                                    child: Center(
+                                        child: Text(
+                                      "Reject",
+                                      style: TextStyle(
+                                          color: Colors.white,
+                                          fontSize: 20,
+                                          fontWeight: FontWeight.bold),
+                                    )),
+                                  ),
+                                ),
+                              ),
+                            ],
                           ),
                         ],
                       ),
-                    ],
+                    ),
                   ),
-                  const SizedBox(height: 5,),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: [
-                      Material(
-                        elevation: 5,
-                        borderRadius: BorderRadius.circular(20),
-                        child: Container(
-                          height: 30,
-                          width: 80,
-                          decoration: BoxDecoration(
-                              color: Colors.green,
-                              borderRadius: BorderRadius.circular(20)
-                          ),
-                          child: Center(child: Text("Accept",style: TextStyle(color: Colors.white,fontSize: 20,fontWeight: FontWeight.bold),)),
-                        ),
-                      ),
-                      const SizedBox(width: 10,),
-                      Material(
-                        elevation: 5,
-                        borderRadius: BorderRadius.circular(20),
-                        child: Container(
-                          height: 30,
-                          width: 80,
-                          decoration: BoxDecoration(
-                              color: Colors.red,
-                              borderRadius: BorderRadius.circular(20)
-                          ),
-                          child: Center(child: Text("Reject",style: TextStyle(color: Colors.white,fontSize: 20,fontWeight: FontWeight.bold),)),
-                        ),
-                      ),
-                    ],
-                  ),
-                ],
-              ),
-            ),
-          ),
-        );
-      }
-      ):Container();
-    });
+                );
+              });
+        });
   }
   @override
   Widget build(BuildContext context) {

@@ -40,10 +40,10 @@ This project has been an incredible learning experience, helping me understand t
 - **Backend**: Firebase
   - Firebase Authentication
   - Cloud Firestore
+  - 
 - **Local Storage**: Shared Preferences
 - **Notifications**: Flutter Local Notifications
 - **UI**: Material Design with custom styling
-
 
 ### Prerequisites
 
@@ -118,6 +118,7 @@ lib/
 ## 👥 Authors
 
 - **Abu Zafor** - *Initial work* - [GitHub](https://github.com/AbuZafor99)
+
 
 
 ## 🔗 Repository
